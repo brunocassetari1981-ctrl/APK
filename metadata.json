@@ -1,0 +1,8 @@
+{
+  "name": "FortuneGo — Apostas Esportivas e Cassino",
+  "description": "Plataforma completa de apostas esportivas, jogos de cassino (Fortune Tiger, Rabbit, Dragon, Mines, Crash) e carteira PIX para Web e Android Play Store.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
