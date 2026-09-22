@@ -1,185 +1,167 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  Sparkles,
-  Flame,
-  Search,
-  Zap,
   Bomb,
-  Plane,
   CircleDot,
+  Flame,
+  Heart,
+  Plane,
+  Search,
+  Sparkles,
+  Star,
   Trophy,
-  ShieldCheck,
-  ChevronRight
+  Wallet,
+  Zap
 } from 'lucide-react';
 import { CASINO_GAMES } from '../data/casinoGames';
-import { CasinoGame, CasinoCategory } from '../types';
+import { CasinoCategory, CasinoGame } from '../types';
 import { SlotGameModal } from './SlotGameModal';
 import { MinesGameModal } from './MinesGameModal';
 import { CrashGameModal } from './CrashGameModal';
 import { RouletteGameModal } from './RouletteGameModal';
+
+const categories: { id: CasinoCategory; label: string; icon: React.ReactNode }[] = [
+  { id: 'all', label: 'Popular', icon: <Trophy className="h-4 w-4" /> },
+  { id: 'slots', label: 'Slots', icon: <Zap className="h-4 w-4" /> },
+  { id: 'crash', label: 'Crash', icon: <Plane className="h-4 w-4" /> },
+  { id: 'mines', label: 'Mines', icon: <Bomb className="h-4 w-4" /> },
+  { id: 'roulette', label: 'Roleta', icon: <CircleDot className="h-4 w-4" /> }
+];
+
+const visualByGame: Record<string, { emoji: string; className: string }> = {
+  fortune_rabbit: { emoji: '🐰', className: 'from-fuchsia-500 via-pink-500 to-orange-500' },
+  fortune_dragon: { emoji: '🐲', className: 'from-cyan-300 via-sky-500 to-violet-500' },
+  fortune_tiger: { emoji: '🐯', className: 'from-orange-500 via-red-500 to-yellow-500' },
+  fortune_rabbit_2: { emoji: '🐰', className: 'from-violet-500 via-fuchsia-500 to-pink-500' },
+  fortune_ox: { emoji: '🐂', className: 'from-red-500 via-orange-500 to-amber-400' },
+  pinata_wins: { emoji: '🪅', className: 'from-cyan-400 via-blue-500 to-orange-400' },
+  fortune_snake: { emoji: '🐍', className: 'from-orange-500 via-red-500 to-fuchsia-600' },
+  mr_treasures_fortune: { emoji: '👑', className: 'from-indigo-500 via-purple-600 to-slate-700' },
+  treasure_bowl: { emoji: '🐂', className: 'from-emerald-500 via-yellow-500 to-orange-500' },
+  lucky_cat: { emoji: '🐱', className: 'from-pink-500 via-purple-500 to-indigo-500' },
+  mines: { emoji: '💣', className: 'from-amber-500 via-yellow-500 to-emerald-500' },
+  crash: { emoji: '🚀', className: 'from-red-500 via-orange-500 to-rose-600' },
+  roulette: { emoji: '🎯', className: 'from-emerald-500 via-green-600 to-yellow-500' }
+};
+
+function GamePoster({ game }: { game: CasinoGame }) {
+  const visual = visualByGame[game.id] ?? { emoji: '✨', className: game.gradient };
+
+  return (
+    <div className={`relative aspect-[3/4] overflow-hidden bg-gradient-to-br ${visual.className}`}>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,.42),transparent_25%),linear-gradient(145deg,transparent_30%,rgba(0,0,0,.55))]" />
+      <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full border-[18px] border-white/20" />
+      <div className="absolute -bottom-12 -left-8 h-36 w-36 rounded-full bg-white/10 blur-xl" />
+
+      <div className="relative z-10 flex items-start justify-between p-2.5">
+        <span className="rounded-br-xl rounded-tl-xl bg-amber-400 px-2 py-1 text-[10px] font-black text-white shadow-lg">
+          {game.studio}
+        </span>
+        <span className="rounded-full bg-white/25 p-1.5 text-white backdrop-blur-sm">
+          <Star className="h-4 w-4 fill-white" />
+        </span>
+      </div>
+
+      <div className="absolute inset-x-0 top-[25%] flex items-center justify-center">
+        <span className="select-none text-7xl drop-shadow-[0_8px_8px_rgba(0,0,0,.35)] sm:text-8xl" role="img" aria-label={game.name}>
+          {visual.emoji}
+        </span>
+      </div>
+
+      {game.isHot && (
+        <span className="absolute left-2.5 top-12 z-10 rounded-full bg-amber-400 p-1.5 text-white shadow-lg">
+          <Heart className="h-3.5 w-3.5 fill-white" />
+        </span>
+      )}
+
+      <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/85 via-black/35 to-transparent px-3 pb-3 pt-10">
+        <h3 className="line-clamp-2 text-center text-sm font-black leading-tight text-white drop-shadow sm:text-base">
+          {game.name}
+        </h3>
+      </div>
+    </div>
+  );
+}
 
 export const CasinoView: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<CasinoCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeGame, setActiveGame] = useState<CasinoGame | null>(null);
 
-  // If a game is active, render that game's engine
   if (activeGame) {
-    if (activeGame.category === 'mines') {
-      return <MinesGameModal game={activeGame} onBack={() => setActiveGame(null)} />;
-    }
-    if (activeGame.category === 'crash') {
-      return <CrashGameModal game={activeGame} onBack={() => setActiveGame(null)} />;
-    }
-    if (activeGame.category === 'roulette') {
-      return <RouletteGameModal game={activeGame} onBack={() => setActiveGame(null)} />;
-    }
+    if (activeGame.category === 'mines') return <MinesGameModal game={activeGame} onBack={() => setActiveGame(null)} />;
+    if (activeGame.category === 'crash') return <CrashGameModal game={activeGame} onBack={() => setActiveGame(null)} />;
+    if (activeGame.category === 'roulette') return <RouletteGameModal game={activeGame} onBack={() => setActiveGame(null)} />;
     return <SlotGameModal game={activeGame} onBack={() => setActiveGame(null)} />;
   }
 
-  const filteredGames = CASINO_GAMES.filter(game => {
-    const matchesCategory =
-      selectedCategory === 'all' || game.category === selectedCategory;
-    const matchesSearch = game.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
-  const getCategoryIcon = (cat: CasinoCategory) => {
-    switch (cat) {
-      case 'slots':
-        return <Zap className="w-4 h-4" />;
-      case 'crash':
-        return <Plane className="w-4 h-4" />;
-      case 'mines':
-        return <Bomb className="w-4 h-4" />;
-      case 'roulette':
-        return <CircleDot className="w-4 h-4" />;
-      default:
-        return <Sparkles className="w-4 h-4" />;
-    }
-  };
+  const filteredGames = useMemo(() => CASINO_GAMES.filter(game => {
+    const categoryMatch = selectedCategory === 'all' || game.category === selectedCategory;
+    return categoryMatch && game.name.toLowerCase().includes(searchQuery.toLowerCase());
+  }), [selectedCategory, searchQuery]);
 
   return (
-    <div className="space-y-6">
-      {/* Casino Header Banner */}
-      <div className="rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 p-5 sm:p-7 overflow-hidden relative shadow-2xl">
-        <div className="relative z-10 max-w-xl">
-          <div className="flex items-center gap-2 text-emerald-400 text-xs font-black tracking-widest uppercase mb-2">
-            <Flame className="w-4 h-4" />
-            <span>FORTUNEGO CASINO VIP</span>
-          </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-            Slots e Grandes Prêmios
-          </h1>
-          <p className="text-slate-300 text-xs sm:text-sm mt-2 max-w-lg leading-relaxed">
-            Jogue Fortune Tiger, Fortune Rabbit, Mines VIP, Aviator Crash e Roleta. Giros instantâneos com gráficos de alta definição.
-          </p>
-
-          <div className="flex items-center gap-3 mt-4 text-xs text-slate-400 font-medium">
-            <span className="flex items-center gap-1 text-emerald-400">
-              <ShieldCheck className="w-4 h-4" />
-              RTP Verificado até 98.5%
-            </span>
-            <span>•</span>
-            <span>{CASINO_GAMES.length} Jogos Prontos</span>
-          </div>
+    <section className="min-h-[calc(100vh-7rem)] space-y-4 rounded-3xl bg-[#191919] p-3 text-white sm:p-5">
+      <div className="flex items-center justify-between gap-3 rounded-2xl bg-[#242424] px-3 py-3 shadow-xl sm:px-5">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[.22em] text-amber-300">FortuneGo Casino</p>
+          <h1 className="text-xl font-black sm:text-2xl">Jogos populares</h1>
         </div>
-
-        {/* Ambient background decoration */}
-        <div className="absolute -right-10 -bottom-20 w-64 h-64 rounded-full border-[36px] border-emerald-500/10 pointer-events-none" />
-      </div>
-
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        {/* Category Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-          {[
-            { id: 'all', label: 'Todos' },
-            { id: 'slots', label: 'Slots PG/WG' },
-            { id: 'mines', label: 'Mines VIP' },
-            { id: 'crash', label: 'Crash / Aviator' },
-            { id: 'roulette', label: 'Roleta' }
-          ].map(cat => {
-            const isActive = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id as CasinoCategory)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-                  isActive
-                    ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-950/40'
-                    : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
-                }`}
-              >
-                {getCategoryIcon(cat.id as CasinoCategory)}
-                <span>{cat.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Search Input */}
-        <div className="relative sm:w-64 shrink-0">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Buscar jogo (Tiger, Mines...)"
-            className="w-full bg-slate-900 border border-slate-800 focus:border-emerald-500 rounded-xl py-2 pl-9 pr-3 text-xs text-white placeholder:text-slate-500 focus:outline-none"
-          />
+        <div className="flex items-center gap-2 rounded-full border border-amber-400/40 bg-black/30 px-3 py-2 text-sm font-bold text-amber-300">
+          <Wallet className="h-4 w-4" />
+          <span className="hidden sm:inline">Saldo disponível</span>
         </div>
       </div>
 
-      {/* Games Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-4">
-        {filteredGames.map(game => (
-          <div
-            key={game.id}
-            onClick={() => setActiveGame(game)}
-            className="group relative cursor-pointer rounded-2xl overflow-hidden border border-slate-800 hover:border-slate-700 bg-slate-900 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/40 flex flex-col"
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+        {categories.map(category => (
+          <button
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition ${selectedCategory === category.id ? 'bg-yellow-300 text-slate-950 shadow-lg shadow-yellow-300/20' : 'bg-[#303030] text-slate-300 hover:bg-[#3c3c3c]'}`}
           >
-            {/* Visual Header / Gradient Box */}
-            <div
-              className={`aspect-[4/3] bg-gradient-to-br ${game.gradient} p-3.5 sm:p-4 flex flex-col justify-between relative overflow-hidden`}
-            >
-              <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/5 transition-colors" />
-
-              <div className="relative z-10 flex items-center justify-between">
-                <span className="text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded bg-black/40 text-white border border-white/10 backdrop-blur-sm">
-                  {game.studio}
-                </span>
-                {game.isHot && (
-                  <span className="flex items-center gap-1 text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-500 text-white shadow-md animate-pulse">
-                    <Flame className="w-3 h-3 fill-white" />
-                    HOT
-                  </span>
-                )}
-              </div>
-
-              <div className="relative z-10">
-                <h3 className="font-black text-white text-base sm:text-lg drop-shadow group-hover:scale-105 transition-transform origin-left">
-                  {game.name}
-                </h3>
-                <p className="text-white/80 text-[11px] mt-0.5 font-medium">RTP {game.rtp}</p>
-              </div>
-            </div>
-
-            {/* Card Footer Info */}
-            <div className="p-3 bg-slate-950 flex items-center justify-between text-xs">
-              <span className="text-slate-400 text-[11px]">
-                Min: R$ {game.minBet.toFixed(2)}
-              </span>
-              <button className="text-emerald-400 font-bold flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
-                <span>Jogar</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
+            {category.icon}
+            {category.label}
+          </button>
         ))}
       </div>
-    </div>
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <input
+          value={searchQuery}
+          onChange={event => setSearchQuery(event.target.value)}
+          placeholder="Buscar jogo"
+          className="w-full rounded-xl border border-white/10 bg-[#292929] py-3 pl-10 pr-4 text-sm text-white outline-none placeholder:text-slate-500 focus:border-yellow-300"
+        />
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:grid-cols-5 xl:grid-cols-6">
+        {filteredGames.map(game => (
+          <button
+            key={game.id}
+            onClick={() => setActiveGame(game)}
+            className="group overflow-hidden rounded-2xl bg-[#292929] text-left shadow-lg shadow-black/20 transition duration-200 hover:-translate-y-1 hover:ring-2 hover:ring-yellow-300/70"
+            aria-label={`Abrir ${game.name}`}
+          >
+            <GamePoster game={game} />
+            <div className="flex items-center justify-between gap-1 px-2 py-2 text-[10px] text-slate-400">
+              <span>Min. R$ {game.minBet.toFixed(2)}</span>
+              <span className="flex items-center gap-1 font-bold text-emerald-300"><Sparkles className="h-3 w-3" /> Jogar</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {filteredGames.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-white/10 py-12 text-center text-sm text-slate-400">
+          Nenhum jogo encontrado.
+        </div>
+      )}
+
+      <div className="flex items-center justify-center gap-2 border-t border-white/10 pt-4 text-[10px] text-slate-500">
+        <Flame className="h-3.5 w-3.5 text-amber-400" />
+        Jogos demonstrativos FortuneGo · Jogue com responsabilidade
+      </div>
+    </section>
   );
 };
