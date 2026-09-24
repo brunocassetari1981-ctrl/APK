@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, RotateCw, Trophy, Sparkles, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, RotateCw, ShieldCheck, Sparkles, Trophy } from 'lucide-react';
 import { CasinoGame } from '../types';
 import { useApp } from '../context/AppContext';
 import { sounds } from '../utils/audio';
@@ -36,12 +36,11 @@ export const RouletteGameModal: React.FC<RouletteGameModalProps> = ({ game, onBa
     sounds.playSpin();
 
     setTimeout(() => {
-      const drawn = Math.floor(Math.random() * 37); // 0 to 36
+      const drawn = Math.floor(Math.random() * 37);
       setWinningNumber(drawn);
       setIsSpinning(false);
       setRecentNumbers(prev => [drawn, ...prev.slice(0, 7)]);
 
-      // Check win condition
       const isRed = RED_NUMBERS.includes(drawn);
       const isBlack = drawn !== 0 && !isRed;
       const isEven = drawn !== 0 && drawn % 2 === 0;
@@ -74,24 +73,18 @@ export const RouletteGameModal: React.FC<RouletteGameModalProps> = ({ game, onBa
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4">
-      {/* Top Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-slate-400 hover:text-white text-xs sm:text-sm py-1 px-2.5 rounded-lg hover:bg-slate-800 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Voltar ao Cassino</span>
+    <div className="mx-auto max-w-[30rem] space-y-4 rounded-[2rem] bg-[#070d1b] p-3 text-white shadow-[0_30px_90px_rgba(0,0,0,.55)]">
+      <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f172a] px-3 py-2">
+        <button onClick={onBack} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-2 py-1.5 text-xs text-slate-300 hover:bg-white/10">
+          <ArrowLeft className="h-4 w-4" />
+          Voltar
         </button>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto max-w-[280px]">
+        <div className="flex max-w-[280px] items-center gap-1.5 overflow-x-auto py-1">
           {recentNumbers.map((num, idx) => (
             <span
               key={idx}
-              className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${getNumberColor(
-                num
-              )} shadow`}
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-black shadow ${getNumberColor(num)}`}
             >
               {num}
             </span>
@@ -99,74 +92,63 @@ export const RouletteGameModal: React.FC<RouletteGameModalProps> = ({ game, onBa
         </div>
       </div>
 
-      {/* Roulette Stage */}
-      <div className="bg-slate-900 rounded-3xl border border-slate-800 p-5 sm:p-7 shadow-2xl space-y-5">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="overflow-hidden rounded-[1.8rem] border border-yellow-300/30 bg-gradient-to-b from-[#0d1729] via-[#0f1c2c] to-[#0b1120] p-4 shadow-[0_0_28px_rgba(250,204,21,.12)]">
+        <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
           <div>
-            <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.2em] text-emerald-300">
+              <Sparkles className="h-4 w-4" />
               Ao Vivo VIP
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white">Roleta Brasileira</h1>
+            </div>
+            <h1 className="mt-1 text-2xl font-black text-white">Roleta Brasileira</h1>
           </div>
-          <div className="text-right">
-            <span className="text-[10px] text-slate-400 font-semibold uppercase block">
-              Saldo Disponível
-            </span>
-            <span className="text-lg font-black text-white">R$ {user.balance.toFixed(2)}</span>
+
+          <div className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-right">
+            <div className="text-[9px] uppercase tracking-[.14em] text-emerald-200">Saldo</div>
+            <div className="text-sm font-black text-white">R$ {user.balance.toFixed(2)}</div>
           </div>
         </div>
 
-        {/* Wheel Center Display */}
-        <div className="flex flex-col items-center justify-center py-6 bg-slate-950 rounded-2xl border border-slate-800 shadow-inner">
+        <div className="flex flex-col items-center justify-center rounded-[1.5rem] border border-white/10 bg-[#07111f] py-6 shadow-inner">
           <div
-            className={`w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-amber-400/60 flex items-center justify-center shadow-2xl transition-transform ${
+            className={`flex h-28 w-28 items-center justify-center rounded-full border-4 border-amber-400/60 shadow-[0_20px_28px_rgba(245,158,11,.2)] transition-transform sm:h-36 sm:w-36 ${
               isSpinning ? 'animate-spin' : ''
             }`}
           >
-            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-900 text-center sm:h-28 sm:w-28">
               {winningNumber !== null ? (
                 <span
-                  className={`text-2xl sm:text-4xl font-black ${
-                    winningNumber === 0
-                      ? 'text-emerald-400'
-                      : RED_NUMBERS.includes(winningNumber)
-                      ? 'text-rose-400'
-                      : 'text-slate-100'
+                  className={`text-2xl font-black sm:text-4xl ${
+                    winningNumber === 0 ? 'text-emerald-400' : RED_NUMBERS.includes(winningNumber) ? 'text-rose-400' : 'text-slate-100'
                   }`}
                 >
                   {winningNumber}
                 </span>
               ) : (
-                <RotateCw className="w-8 h-8 text-amber-400" />
+                <RotateCw className="h-8 w-8 text-amber-400" />
               )}
             </div>
           </div>
-          <span className="text-xs text-slate-400 mt-3 font-semibold tracking-wider uppercase">
-            {isSpinning ? 'GIRANDO A ROLETA...' : 'ROLETA PRONTA'}
+          <span className="mt-3 text-[10px] font-black uppercase tracking-[.18em] text-slate-400">
+            {isSpinning ? 'Girando...' : 'Roleta pronta'}
           </span>
         </div>
 
-        {/* Betting Board (Outside Bets) */}
-        <div className="space-y-3">
-          <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
-            Escolha seu Mercado (Pagamento 2x)
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        <div className="mt-4 space-y-3">
+          <p className="text-[10px] font-black uppercase tracking-[.18em] text-slate-400">Escolha seu mercado</p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {[
               { id: 'red', label: 'Vermelho', bg: 'bg-rose-600 hover:bg-rose-500' },
               { id: 'black', label: 'Preto', bg: 'bg-slate-950 hover:bg-slate-800' },
               { id: 'even', label: 'Par (Even)', bg: 'bg-slate-800 hover:bg-slate-700' },
               { id: 'odd', label: 'Ímpar (Odd)', bg: 'bg-slate-800 hover:bg-slate-700' },
               { id: 'low', label: '1 ao 18', bg: 'bg-slate-800 hover:bg-slate-700' },
-              { id: 'high', label: '19 ao 36', bg: 'bg-slate-800 hover:bg-slate-700' }
+              { id: 'high', label: '19 ao 36', bg: 'bg-slate-800 hover:bg-slate-700' },
             ].map(bet => (
               <button
                 key={bet.id}
                 onClick={() => setSelectedBet(bet.id as any)}
-                className={`py-3 px-2 rounded-xl text-xs sm:text-sm font-black transition-all border ${bet.bg} ${
-                  selectedBet === bet.id
-                    ? 'ring-2 ring-amber-400 border-amber-400 text-white scale-[1.02] shadow-lg'
-                    : 'border-slate-800 text-slate-200 opacity-80'
+                className={`rounded-xl border px-2 py-3 text-xs font-black transition-all ${bet.bg} ${
+                  selectedBet === bet.id ? 'scale-[1.02] border-amber-400 ring-2 ring-amber-400 text-white shadow-lg' : 'border-slate-800 text-slate-200 opacity-85'
                 }`}
               >
                 {bet.label}
@@ -175,17 +157,14 @@ export const RouletteGameModal: React.FC<RouletteGameModalProps> = ({ game, onBa
           </div>
         </div>
 
-        {/* Stake and Spin */}
-        <div className="space-y-3 pt-2">
+        <div className="mt-4 space-y-3">
           <div className="grid grid-cols-6 gap-1.5">
             {stakePresets.map(preset => (
               <button
                 key={preset}
                 onClick={() => setStake(preset)}
-                className={`py-1.5 rounded-xl text-xs font-bold transition-colors ${
-                  stake === preset
-                    ? 'bg-emerald-500 text-slate-950'
-                    : 'bg-slate-950 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                className={`rounded-xl py-2 text-xs font-black transition ${
+                  stake === preset ? 'bg-emerald-500 text-slate-950' : 'border border-slate-700 bg-slate-950 text-slate-300 hover:bg-slate-800'
                 }`}
               >
                 R$ {preset}
@@ -196,9 +175,10 @@ export const RouletteGameModal: React.FC<RouletteGameModalProps> = ({ game, onBa
           <button
             onClick={spinWheel}
             disabled={isSpinning || user.balance < stake}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-amber-400 hover:from-emerald-400 text-slate-950 font-black text-base shadow-xl shadow-emerald-950/50 transition-all active:scale-98 disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-amber-400 px-4 py-3 text-base font-black text-slate-950 shadow-[0_16px_32px_rgba(16,185,129,.2)] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isSpinning ? 'GIRANDO...' : `APOSTAR E GIRAR (R$ ${stake.toFixed(2)})`}
+            <Trophy className="h-5 w-5" />
+            <span>{isSpinning ? 'GIRANDO...' : `APOSTAR E GIRAR (R$ ${stake.toFixed(2)})`}</span>
           </button>
         </div>
       </div>
