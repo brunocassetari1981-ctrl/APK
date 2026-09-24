@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
-  Plane,
+  CheckCircle2,
   Flame,
+  Plane,
+  RotateCcw,
   Sparkles,
   TrendingUp,
-  RotateCcw,
-  CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
 } from 'lucide-react';
 import { CasinoGame } from '../types';
 import { useApp } from '../context/AppContext';
@@ -47,8 +47,6 @@ export const CrashGameModal: React.FC<CrashGameModalProps> = ({ game, onBack }) 
     setMultiplier(1.0);
     sounds.playCoin();
 
-    // Determine crash point using fair exponential curve
-    // ~10% instant crash (1.00x - 1.20x), median around 2.0x, can reach 15x+
     const rand = Math.random();
     let crashPoint = 1.01;
     if (rand < 0.12) {
@@ -66,11 +64,9 @@ export const CrashGameModal: React.FC<CrashGameModalProps> = ({ game, onBack }) 
 
     const loop = (now: number) => {
       const elapsed = (now - startTimeRef.current) / 1000;
-      // Exponential rise: multiplier = e^(elapsed * 0.25)
       const current = Number(Math.exp(elapsed * 0.35).toFixed(2));
 
       if (current >= crashPointRef.current) {
-        // Crashed!
         sounds.playExplosion();
         setMultiplier(crashPointRef.current);
         setGameState('crashed');
@@ -81,7 +77,6 @@ export const CrashGameModal: React.FC<CrashGameModalProps> = ({ game, onBack }) 
 
       setMultiplier(current);
 
-      // Check auto cashout
       if (autoCashout && current >= autoCashout && gameState === 'flying') {
         handleCashout(current);
         return;
@@ -113,26 +108,26 @@ export const CrashGameModal: React.FC<CrashGameModalProps> = ({ game, onBack }) 
   const progressPercent = Math.min(100, ((multiplier - 1) / 10) * 100);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4">
-      {/* Top Header */}
-      <div className="flex items-center justify-between">
+    <div className="mx-auto max-w-[30rem] space-y-4 rounded-[2rem] bg-[#070d1b] p-3 text-white shadow-[0_30px_90px_rgba(0,0,0,.55)]">
+      <div className="flex items-center justify-between gap-2 rounded-2xl border border-white/10 bg-[#101827] px-3 py-2">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-slate-400 hover:text-white text-xs sm:text-sm py-1 px-2.5 rounded-lg hover:bg-slate-800 transition-colors"
+          className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-2 py-1.5 text-xs text-slate-300 hover:bg-white/10"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Voltar ao Cassino</span>
+          <ArrowLeft className="h-4 w-4" />
+          Voltar
         </button>
-        <div className="flex items-center gap-1.5 overflow-x-auto max-w-[280px] sm:max-w-md py-1">
+
+        <div className="flex items-center gap-1.5 overflow-x-auto py-1">
           {history.map((h, i) => (
             <span
               key={i}
-              className={`text-[11px] font-black px-2 py-0.5 rounded-md whitespace-nowrap ${
+              className={`whitespace-nowrap rounded-md border px-2 py-0.5 text-[10px] font-black ${
                 h >= 3.0
-                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                  ? 'border-purple-500/30 bg-purple-500/20 text-purple-300'
                   : h >= 2.0
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'bg-slate-800 text-slate-400'
+                    ? 'border-emerald-500/30 bg-emerald-500/20 text-emerald-400'
+                    : 'border-slate-700 bg-slate-800 text-slate-400'
               }`}
             >
               {h.toFixed(2)}x
@@ -141,93 +136,85 @@ export const CrashGameModal: React.FC<CrashGameModalProps> = ({ game, onBack }) 
         </div>
       </div>
 
-      {/* Flight Canvas & Multiplier Screen */}
-      <div className="bg-slate-900 rounded-3xl border border-slate-800 p-5 sm:p-7 shadow-2xl space-y-5">
-        <div className="relative h-64 sm:h-72 w-full bg-slate-950 rounded-2xl border border-slate-800/80 overflow-hidden flex flex-col items-center justify-center p-6 shadow-inner">
-          {/* Background grid lines */}
+      <div className="overflow-hidden rounded-[1.8rem] border border-yellow-300/30 bg-gradient-to-b from-[#121b34] via-[#0f1730] to-[#0b1126] p-4 shadow-[0_0_28px_rgba(250,204,21,.12)]">
+        <div className="mb-3 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.2em] text-yellow-300">
+              <Plane className="h-4 w-4" />
+              {game.name}
+            </div>
+            <h1 className="mt-1 text-2xl font-black text-white">Crash</h1>
+          </div>
+
+          <div className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-right">
+            <div className="text-[9px] uppercase tracking-[.14em] text-emerald-200">Saldo</div>
+            <div className="text-sm font-black text-white">R$ {user.balance.toFixed(2)}</div>
+          </div>
+        </div>
+
+        <div className="relative h-64 w-full overflow-hidden rounded-[1.4rem] border border-white/10 bg-[#080d1f] shadow-inner sm:h-72">
           <div className="absolute inset-0 opacity-15 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:2rem_2rem]" />
 
-          {/* Animated Flight Path */}
           {gameState === 'flying' && (
             <div
-              className="absolute transition-all duration-75 flex items-center gap-1.5"
+              className="absolute z-10 flex items-center gap-1.5 transition-all duration-75"
               style={{
                 left: `${Math.min(80, 10 + progressPercent * 0.7)}%`,
-                bottom: `${Math.min(75, 15 + progressPercent * 0.6)}%`
+                bottom: `${Math.min(75, 15 + progressPercent * 0.6)}%`,
               }}
             >
-              <div className="w-10 h-10 rounded-full bg-rose-500/20 border border-rose-500 flex items-center justify-center text-rose-400 animate-bounce">
-                <Plane className="w-6 h-6 transform -rotate-45" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-rose-500 bg-rose-500/20 text-rose-400 animate-bounce">
+                <Plane className="h-6 w-6 -rotate-45" />
               </div>
             </div>
           )}
 
-          {/* Multiplier Central Display */}
-          <div className="relative z-10 text-center">
+          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
             {gameState === 'crashed' ? (
               <div className="space-y-1 animate-in zoom-in">
-                <p className="text-sm font-black text-rose-500 tracking-widest uppercase">
-                  VOOU PARA LONGE!
-                </p>
-                <p className="text-5xl sm:text-6xl font-black text-rose-500">
-                  {multiplier.toFixed(2)}x
-                </p>
+                <p className="text-sm font-black uppercase tracking-[.18em] text-rose-500">Voou longe!</p>
+                <p className="text-5xl font-black text-rose-500 sm:text-6xl">{multiplier.toFixed(2)}x</p>
               </div>
             ) : gameState === 'cashed_out' ? (
               <div className="space-y-1 animate-in zoom-in">
-                <p className="text-xs font-black text-emerald-400 tracking-widest uppercase">
-                  VOCÊ SACOU COM SUCESSO!
-                </p>
-                <p className="text-5xl sm:text-6xl font-black text-emerald-400">
-                  {multiplier.toFixed(2)}x
-                </p>
+                <p className="text-xs font-black uppercase tracking-[.18em] text-emerald-400">Você sacou</p>
+                <p className="text-5xl font-black text-emerald-400 sm:text-6xl">{multiplier.toFixed(2)}x</p>
               </div>
             ) : (
               <div className="space-y-1">
-                <p className="text-5xl sm:text-6xl font-black text-white tracking-tight">
-                  {multiplier.toFixed(2)}x
-                </p>
-                {gameState === 'flying' && (
-                  <p className="text-xs text-amber-400 font-bold animate-pulse">
-                    SUBINDO... SACAR AGORA!
-                  </p>
-                )}
-                {gameState === 'idle' && (
-                  <p className="text-xs text-slate-400 font-medium">
-                    Faça sua aposta para decolar
-                  </p>
+                <p className="text-5xl font-black tracking-tight text-white sm:text-6xl">{multiplier.toFixed(2)}x</p>
+                {gameState === 'flying' ? (
+                  <p className="text-xs font-bold uppercase tracking-[.15em] text-amber-400 animate-pulse">Subindo… sacar agora</p>
+                ) : (
+                  <p className="text-xs font-medium uppercase tracking-[.15em] text-slate-400">Faça sua aposta</p>
                 )}
               </div>
             )}
           </div>
         </div>
 
-        {/* Action Controls */}
-        <div className="space-y-4">
+        <div className="mt-4 space-y-4">
           {gameState === 'flying' ? (
             <button
               onClick={() => handleCashout()}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-amber-400 hover:from-emerald-400 text-slate-950 font-black text-xl shadow-2xl shadow-emerald-950/60 transition-transform active:scale-98 animate-pulse"
+              className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-amber-400 px-4 py-4 text-xl font-black text-slate-950 shadow-[0_16px_32px_rgba(16,185,129,.35)]"
             >
-              SACAR R$ {(stake * multiplier).toFixed(2)} ({multiplier.toFixed(2)}x)
+              Sacar R$ {(stake * multiplier).toFixed(2)} ({multiplier.toFixed(2)}x)
             </button>
           ) : (
             <>
-              {/* Stakes buttons */}
               <div>
-                <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+                <div className="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-[.18em] text-slate-400">
                   <span>Valor da Aposta</span>
                   <span>Saldo: R$ {user.balance.toFixed(2)}</span>
                 </div>
-                <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
+                <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-7">
                   {stakePresets.map(preset => (
                     <button
                       key={preset}
                       onClick={() => setStake(preset)}
-                      className={`py-2 rounded-xl text-xs font-bold transition-colors ${
-                        stake === preset
-                          ? 'bg-emerald-500 text-slate-950'
-                          : 'bg-slate-950 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                      className={`rounded-xl py-2 text-xs font-black transition ${
+                        stake === preset ? 'bg-emerald-500 text-slate-950' : 'border border-slate-700 bg-slate-950 text-slate-300 hover:bg-slate-800'
                       }`}
                     >
                       R$ {preset}
@@ -236,13 +223,28 @@ export const CrashGameModal: React.FC<CrashGameModalProps> = ({ game, onBack }) 
                 </div>
               </div>
 
-              {/* Start Flight button */}
+              <div className="rounded-2xl border border-yellow-300/20 bg-yellow-500/5 p-3">
+                <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-[.18em] text-slate-300">
+                  <span>Auto Cashout</span>
+                  <span className="text-yellow-300">{autoCashout.toFixed(2)}x</span>
+                </div>
+                <input
+                  type="range"
+                  min={1.1}
+                  max={10}
+                  step={0.1}
+                  value={autoCashout}
+                  onChange={event => setAutoCashout(Number(event.target.value))}
+                  className="w-full accent-amber-400"
+                />
+              </div>
+
               <button
                 onClick={startFlight}
                 disabled={user.balance < stake}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-orange-500 to-amber-400 hover:opacity-95 text-slate-950 font-black text-base shadow-xl shadow-rose-950/50 transition-transform active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-rose-500 via-orange-500 to-amber-400 px-4 py-3 text-base font-black text-slate-950 shadow-[0_16px_32px_rgba(244,114,182,.25)] disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <Plane className="w-5 h-5 fill-slate-950" />
+                <Plane className="h-5 w-5 fill-slate-950" />
                 <span>DECOLAR (R$ {stake.toFixed(2)})</span>
               </button>
             </>
