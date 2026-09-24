@@ -17,7 +17,11 @@ import { CasinoGame } from '../types';
 import { useApp } from '../context/AppContext';
 import { sounds } from '../utils/audio';
 
-interface SlotGameModalProps { game: CasinoGame; onBack: () => void; }
+interface SlotGameModalProps {
+  game: CasinoGame;
+  onBack: () => void;
+}
+
 type SymbolKey = 'rabbit' | 'carrot' | 'coin' | 'ingot' | 'gem' | 'star';
 
 const SYMBOLS: Record<SymbolKey, { label: string; icon: string; color: string }> = {
@@ -60,14 +64,14 @@ const Reel: React.FC<ReelProps> = ({ symbol, position, spinning, delay }) => {
   const reelItems = [...REEL_SYMBOLS, ...REEL_SYMBOLS];
 
   return (
-    <div className="relative h-[17rem] overflow-hidden rounded-[1rem] border-2 border-yellow-300/70 bg-[#17052e] shadow-[inset_0_0_30px_rgba(0,0,0,.7)] sm:h-[22rem]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-black/70 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-16 bg-gradient-to-t from-black/70 to-transparent" />
+    <div className="relative h-[17rem] overflow-hidden rounded-[0.95rem] border-2 border-yellow-300/75 bg-[#17052e] shadow-[inset_0_0_30px_rgba(0,0,0,.75)] sm:h-[22rem]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-gradient-to-b from-black/80 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-14 bg-gradient-to-t from-black/80 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 h-1 -translate-y-1/2 bg-yellow-200/85 shadow-[0_0_18px_rgba(253,224,71,.9)]" />
       <div
         className="absolute inset-x-1 top-1/2 transition-transform ease-out"
         style={{
-          transform: `translateY(calc(-${(position || start) * 100}% / 1.9 + 8.4rem))`,
+          transform: `translateY(calc(-${(position || start) * 100}% / 1.9 + 8.5rem))`,
           transitionDuration: spinning ? '65ms' : '420ms',
           transitionDelay: `${delay}ms`,
         }}
@@ -75,9 +79,9 @@ const Reel: React.FC<ReelProps> = ({ symbol, position, spinning, delay }) => {
         {reelItems.map((item, index) => {
           const tile = SYMBOLS[item];
           return (
-            <div key={`${item}-${index}`} className="flex h-[8.5rem] items-center justify-center sm:h-[10.75rem]">
-              <div className={`flex h-[7.4rem] w-full items-center justify-center rounded-[0.9rem] bg-gradient-to-b ${tile.color} border border-white/10 shadow-[inset_0_2px_12px_rgba(255,255,255,.35),inset_0_-14px_24px_rgba(0,0,0,.3)] sm:h-[9.7rem]`}>
-                <span className="select-none text-[3.3rem] drop-shadow-[0_10px_8px_rgba(0,0,0,.45)] sm:text-[5.8rem]" role="img" aria-label={tile.label}>{tile.icon}</span>
+            <div key={`${item}-${index}`} className="flex h-[8rem] items-center justify-center sm:h-[10.4rem]">
+              <div className={`flex h-[7rem] w-full items-center justify-center rounded-[0.9rem] bg-gradient-to-b ${tile.color} border border-white/10 shadow-[inset_0_2px_12px_rgba(255,255,255,.35),inset_0_-14px_24px_rgba(0,0,0,.3)] sm:h-[9.4rem]`}>
+                <span className="select-none text-[3rem] drop-shadow-[0_10px_8px_rgba(0,0,0,.45)] sm:text-[5rem]" role="img" aria-label={tile.label}>{tile.icon}</span>
               </div>
             </div>
           );
@@ -173,12 +177,11 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
   }, [chargeCasinoStake, game.maxBet, game.minBet, game.name, isSpinning, payoutCasinoWin, showToast, stake, turbo]);
 
   spinRef.current = spin;
-
   useEffect(() => () => setAutoSpin(false), []);
 
   return (
-    <div className="mx-auto min-h-[calc(100vh-5rem)] max-w-[30rem] overflow-hidden rounded-[2rem] bg-[#050b1a] text-white shadow-[0_30px_100px_rgba(0,0,0,.6)]">
-      <header className="bg-gradient-to-r from-[#431691] via-[#7f255a] to-[#da3d73] px-3 pb-4 pt-2">
+    <div className="mx-auto min-h-[calc(100vh-5rem)] max-w-[29rem] overflow-hidden rounded-[1.8rem] bg-[#050b1a] text-white shadow-[0_30px_100px_rgba(0,0,0,.7)]">
+      <header className="bg-gradient-to-r from-[#3f1c74] via-[#7d2455] to-[#d14471] px-3 pb-4 pt-2">
         <div className="flex items-center justify-between gap-2">
           <button
             onClick={() => {
@@ -192,8 +195,8 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
           </button>
 
           <div className="text-center">
-            <div className="text-[9px] font-black uppercase tracking-[0.28em] text-yellow-200">FortuneGo</div>
-            <h1 className="text-[1.35rem] font-black text-yellow-300">{game.name}</h1>
+            <div className="text-[9px] font-black uppercase tracking-[0.3em] text-yellow-200">FortuneGo</div>
+            <h1 className="text-[1.25rem] font-black text-yellow-300">{game.name}</h1>
           </div>
 
           <button
@@ -205,26 +208,26 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
           </button>
         </div>
 
-        <div className="mt-4 rounded-2xl border-2 border-yellow-300/80 bg-gradient-to-r from-[#4b2ac0] via-[#6b2a8b] to-[#9b376d] px-3 py-3 text-center shadow-[0_0_18px_rgba(250,204,21,0.22)]">
+        <div className="mt-4 rounded-2xl border-2 border-yellow-300/80 bg-gradient-to-r from-[#4c2bc0] via-[#6b2a8a] to-[#9a376f] px-3 py-3 text-center shadow-[0_0_20px_rgba(250,204,21,.22)]">
           <div className="mb-1 flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-[0.28em] text-yellow-100">
             <Crown className="h-4 w-4" />
             Jackpot
           </div>
-          <div className="text-[1.8rem] font-black tracking-[0.04em] text-yellow-300">GRAND 13.523.038,67</div>
+          <div className="text-[1.55rem] font-black tracking-[0.05em] text-yellow-300">GRAND 13.523.038,67</div>
         </div>
 
         <div className="mt-3 grid grid-cols-3 gap-2 text-center text-[9px] font-black uppercase tracking-[0.12em] text-white">
           <div className="rounded-xl border border-red-300/60 bg-red-600/90 px-2 py-3">
             Major
-            <div className="mt-1 text-[1rem] text-yellow-100">975.030,79</div>
+            <div className="mt-1 text-[0.95rem] text-yellow-100">975.030,79</div>
           </div>
           <div className="rounded-xl border border-blue-300/60 bg-blue-600/90 px-2 py-3">
             Minor
-            <div className="mt-1 text-[1rem] text-yellow-100">2,00</div>
+            <div className="mt-1 text-[0.95rem] text-yellow-100">2,00</div>
           </div>
           <div className="rounded-xl border border-green-300/60 bg-green-600/90 px-2 py-3">
             Mini
-            <div className="mt-1 text-[1rem] text-yellow-100">1,00</div>
+            <div className="mt-1 text-[0.95rem] text-yellow-100">1,00</div>
           </div>
         </div>
       </header>
@@ -251,8 +254,8 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
           </div>
         )}
 
-        <section className="relative mt-4 overflow-hidden rounded-[1.6rem] border-4 border-yellow-400/95 bg-gradient-to-b from-[#6238be] via-[#31116d] to-[#17072a] p-3 shadow-[0_0_28px_rgba(250,204,21,0.2)]">
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-cyan-300/20 to-transparent" />
+        <section className="relative mt-4 overflow-hidden rounded-[1.6rem] border-4 border-yellow-400/95 bg-gradient-to-b from-[#5d40e2] via-[#2f146d] to-[#17072a] p-3 shadow-[0_0_30px_rgba(250,204,21,0.18)]">
+          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-cyan-300/15 to-transparent" />
           <div className="relative mb-2 text-center text-5xl sm:text-7xl">🐰</div>
 
           <div className="relative grid grid-cols-3 gap-2 rounded-[1.1rem] border-2 border-yellow-300/75 bg-[#18072f] p-2 sm:gap-3 sm:p-3">
@@ -263,7 +266,7 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
                   <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-white/25 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/25 to-transparent" />
                   <div className="flex h-[13.5rem] items-center justify-center sm:h-[16.5rem]">
-                    <span className="select-none text-[3.4rem] drop-shadow-[0_12px_10px_rgba(0,0,0,0.45)] sm:text-[5.4rem]" role="img" aria-label={tile.label}>{tile.icon}</span>
+                    <span className="select-none text-[3.2rem] drop-shadow-[0_12px_10px_rgba(0,0,0,0.45)] sm:text-[5.2rem]" role="img" aria-label={tile.label}>{tile.icon}</span>
                   </div>
                 </div>
               );
