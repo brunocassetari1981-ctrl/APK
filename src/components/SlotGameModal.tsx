@@ -33,11 +33,9 @@ const SYMBOL_POOL: SymbolKey[] = ['rabbit', 'carrot', 'coin', 'ingot', 'gem', 's
 const BETS = [0.1, 0.2, 0.5, 1, 2, 5, 10];
 const REEL_SYMBOLS: SymbolKey[] = [...SYMBOL_POOL, ...SYMBOL_POOL, ...SYMBOL_POOL, ...SYMBOL_POOL];
 
-function randomSymbol(): SymbolKey {
-  return SYMBOL_POOL[Math.floor(Math.random() * SYMBOL_POOL.length)];
-}
+const randomSymbol = (): SymbolKey => SYMBOL_POOL[Math.floor(Math.random() * SYMBOL_POOL.length)];
 
-function outcomeForSpin(): SymbolKey[] {
+const outcomeForSpin = (): SymbolKey[] => {
   const roll = Math.random();
   if (roll < 0.06) return ['rabbit', 'rabbit', 'rabbit'];
   if (roll < 0.14) return ['gem', 'gem', 'gem'];
@@ -47,7 +45,7 @@ function outcomeForSpin(): SymbolKey[] {
     return [symbol, symbol, randomSymbol()];
   }
   return ['carrot', 'ingot', 'coin'];
-}
+};
 
 interface ReelProps {
   symbol: SymbolKey;
@@ -62,14 +60,14 @@ const Reel: React.FC<ReelProps> = ({ symbol, position, spinning, delay }) => {
   const reelItems = [...REEL_SYMBOLS, ...REEL_SYMBOLS];
 
   return (
-    <div className="relative h-[19rem] overflow-hidden rounded-[1.05rem] border-2 border-yellow-300/70 bg-[#17052e] shadow-[inset_0_0_28px_rgba(0,0,0,.7)] sm:h-[24rem]">
+    <div className="relative h-[17rem] overflow-hidden rounded-[1rem] border-2 border-yellow-300/70 bg-[#17052e] shadow-[inset_0_0_30px_rgba(0,0,0,.7)] sm:h-[22rem]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-black/70 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-16 bg-gradient-to-t from-black/70 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 h-1 -translate-y-1/2 bg-yellow-200/85 shadow-[0_0_18px_rgba(253,224,71,.9)]" />
       <div
         className="absolute inset-x-1 top-1/2 transition-transform ease-out"
         style={{
-          transform: `translateY(calc(-${(position || start) * 100}% / 1.9 + 9.4rem))`,
+          transform: `translateY(calc(-${(position || start) * 100}% / 1.9 + 8.4rem))`,
           transitionDuration: spinning ? '65ms' : '420ms',
           transitionDelay: `${delay}ms`,
         }}
@@ -77,9 +75,9 @@ const Reel: React.FC<ReelProps> = ({ symbol, position, spinning, delay }) => {
         {reelItems.map((item, index) => {
           const tile = SYMBOLS[item];
           return (
-            <div key={`${item}-${index}`} className="flex h-[9.5rem] items-center justify-center sm:h-[12rem]">
-              <div className={`flex h-[8.5rem] w-full items-center justify-center rounded-[1rem] bg-gradient-to-b ${tile.color} border border-white/10 shadow-[inset_0_2px_12px_rgba(255,255,255,.35),inset_0_-14px_24px_rgba(0,0,0,.3)] sm:h-[11rem]`}>
-                <span className="select-none text-[3.7rem] drop-shadow-[0_10px_8px_rgba(0,0,0,.45)] sm:text-[6rem]" role="img" aria-label={tile.label}>{tile.icon}</span>
+            <div key={`${item}-${index}`} className="flex h-[8.5rem] items-center justify-center sm:h-[10.75rem]">
+              <div className={`flex h-[7.4rem] w-full items-center justify-center rounded-[0.9rem] bg-gradient-to-b ${tile.color} border border-white/10 shadow-[inset_0_2px_12px_rgba(255,255,255,.35),inset_0_-14px_24px_rgba(0,0,0,.3)] sm:h-[9.7rem]`}>
+                <span className="select-none text-[3.3rem] drop-shadow-[0_10px_8px_rgba(0,0,0,.45)] sm:text-[5.8rem]" role="img" aria-label={tile.label}>{tile.icon}</span>
               </div>
             </div>
           );
@@ -179,8 +177,8 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
   useEffect(() => () => setAutoSpin(false), []);
 
   return (
-    <div className="mx-auto min-h-[calc(100vh-5rem)] max-w-[28rem] overflow-hidden rounded-[2rem] bg-[#060b1d] text-white shadow-[0_30px_100px_rgba(0,0,0,.6)] sm:max-w-[31rem]">
-      <header className="bg-gradient-to-r from-[#38137d] via-[#7e2569] to-[#d13d72] px-3 pb-4 pt-2">
+    <div className="mx-auto min-h-[calc(100vh-5rem)] max-w-[30rem] overflow-hidden rounded-[2rem] bg-[#050b1a] text-white shadow-[0_30px_100px_rgba(0,0,0,.6)]">
+      <header className="bg-gradient-to-r from-[#431691] via-[#7f255a] to-[#da3d73] px-3 pb-4 pt-2">
         <div className="flex items-center justify-between gap-2">
           <button
             onClick={() => {
@@ -195,7 +193,7 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
 
           <div className="text-center">
             <div className="text-[9px] font-black uppercase tracking-[0.28em] text-yellow-200">FortuneGo</div>
-            <h1 className="text-[1.3rem] font-black text-yellow-300 sm:text-[1.7rem]">{game.name}</h1>
+            <h1 className="text-[1.35rem] font-black text-yellow-300">{game.name}</h1>
           </div>
 
           <button
@@ -207,12 +205,12 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
           </button>
         </div>
 
-        <div className="mt-4 rounded-2xl border-2 border-yellow-300/80 bg-gradient-to-r from-[#4c2bc0] via-[#6d2888] to-[#9b3570] px-3 py-3 text-center shadow-[0_0_18px_rgba(250,204,21,0.22)]">
+        <div className="mt-4 rounded-2xl border-2 border-yellow-300/80 bg-gradient-to-r from-[#4b2ac0] via-[#6b2a8b] to-[#9b376d] px-3 py-3 text-center shadow-[0_0_18px_rgba(250,204,21,0.22)]">
           <div className="mb-1 flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-[0.28em] text-yellow-100">
             <Crown className="h-4 w-4" />
             Jackpot
           </div>
-          <div className="text-2xl font-black tracking-[0.06em] text-yellow-300 sm:text-[2.2rem]">GRAND 13.523.038,67</div>
+          <div className="text-[1.8rem] font-black tracking-[0.04em] text-yellow-300">GRAND 13.523.038,67</div>
         </div>
 
         <div className="mt-3 grid grid-cols-3 gap-2 text-center text-[9px] font-black uppercase tracking-[0.12em] text-white">
@@ -231,7 +229,7 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
         </div>
       </header>
 
-      <main className="bg-[#11152d] px-3 py-3 sm:px-4">
+      <main className="bg-[#11152d] px-3 py-3">
         <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-[#1b1e33] px-3 py-2 text-[11px] font-black text-slate-200">
           <Sparkles className="h-4 w-4 text-yellow-300" />
           <span>Tarefa</span>
@@ -253,19 +251,19 @@ export const SlotGameModal: React.FC<SlotGameModalProps> = ({ game, onBack }) =>
           </div>
         )}
 
-        <section className="relative mt-4 overflow-hidden rounded-[1.7rem] border-4 border-yellow-400/95 bg-gradient-to-b from-[#6444c9] via-[#331370] to-[#19072a] p-3 shadow-[0_0_28px_rgba(250,204,21,0.2)]">
+        <section className="relative mt-4 overflow-hidden rounded-[1.6rem] border-4 border-yellow-400/95 bg-gradient-to-b from-[#6238be] via-[#31116d] to-[#17072a] p-3 shadow-[0_0_28px_rgba(250,204,21,0.2)]">
           <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-cyan-300/20 to-transparent" />
           <div className="relative mb-2 text-center text-5xl sm:text-7xl">🐰</div>
 
-          <div className="relative grid grid-cols-3 gap-2 rounded-[1.2rem] border-2 border-yellow-300/75 bg-[#18072f] p-2 sm:gap-3 sm:p-3">
+          <div className="relative grid grid-cols-3 gap-2 rounded-[1.1rem] border-2 border-yellow-300/75 bg-[#18072f] p-2 sm:gap-3 sm:p-3">
             {reels.map((symbol, index) => {
               const tile = SYMBOLS[symbol];
               return (
-                <div key={`${symbol}-${index}`} className={`relative overflow-hidden rounded-[1rem] border border-fuchsia-200/20 bg-gradient-to-b ${tile.color}`}>
+                <div key={`${symbol}-${index}`} className={`relative overflow-hidden rounded-[0.95rem] border border-fuchsia-200/20 bg-gradient-to-b ${tile.color}`}>
                   <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-white/25 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/25 to-transparent" />
-                  <div className="flex h-[14rem] items-center justify-center sm:h-[17rem]">
-                    <span className="select-none text-[3.5rem] drop-shadow-[0_12px_10px_rgba(0,0,0,0.45)] sm:text-[5.6rem]" role="img" aria-label={tile.label}>{tile.icon}</span>
+                  <div className="flex h-[13.5rem] items-center justify-center sm:h-[16.5rem]">
+                    <span className="select-none text-[3.4rem] drop-shadow-[0_12px_10px_rgba(0,0,0,0.45)] sm:text-[5.4rem]" role="img" aria-label={tile.label}>{tile.icon}</span>
                   </div>
                 </div>
               );
