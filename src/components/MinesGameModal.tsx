@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {
+  AlertCircle,
   ArrowLeft,
   Bomb,
   Diamond,
   Flame,
-  Sparkles,
   RotateCcw,
   ShieldCheck,
-  AlertCircle
+  Sparkles,
 } from 'lucide-react';
 import { CasinoGame } from '../types';
 import { useApp } from '../context/AppContext';
@@ -36,7 +36,6 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
   const stakePresets = [1, 2, 5, 10, 20, 50, 100];
   const minePresets = [2, 3, 5, 10, 15, 20];
 
-  // Progressive multiplier calculation based on odds of revealing diamonds
   const getNextMultiplier = (diamonds: number, mines: number): number => {
     if (diamonds === 0) return 1.0;
     let multiplier = 1.0;
@@ -44,7 +43,7 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
       const remainingTiles = 25 - i;
       const safeTiles = remainingTiles - mines;
       if (safeTiles <= 0) break;
-      multiplier *= (remainingTiles / safeTiles) * 0.98; // 2% house edge
+      multiplier *= (remainingTiles / safeTiles) * 0.98;
     }
     return Number(multiplier.toFixed(2));
   };
@@ -61,7 +60,6 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
     const charged = chargeCasinoStake(stake, 'Mines VIP');
     if (!charged) return;
 
-    // Generate 25 tiles with randomly distributed mines
     const mineIndices = new Set<number>();
     while (mineIndices.size < mineCount) {
       mineIndices.add(Math.floor(Math.random() * 25));
@@ -70,7 +68,7 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
     const newTiles: TileState[] = Array.from({ length: 25 }, (_, i) => ({
       index: i,
       isMine: mineIndices.has(i),
-      isRevealed: false
+      isRevealed: false,
     }));
 
     setTiles(newTiles);
@@ -85,27 +83,17 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
     if (tile.isRevealed) return;
 
     if (tile.isMine) {
-      // Hit a mine!
       sounds.playExplosion();
-      setTiles(prev =>
-        prev.map(t => ({
-          ...t,
-          isRevealed: true
-        }))
-      );
+      setTiles(prev => prev.map(t => ({ ...t, isRevealed: true })));
       setGameState('gameover');
       showToast('BOMBA! Você perdeu o valor apostado.');
     } else {
-      // Safe diamond!
       sounds.playCoin();
       const nextDiamonds = revealedDiamonds + 1;
       setRevealedDiamonds(nextDiamonds);
 
-      setTiles(prev =>
-        prev.map(t => (t.index === index ? { ...t, isRevealed: true } : t))
-      );
+      setTiles(prev => prev.map(t => (t.index === index ? { ...t, isRevealed: true } : t)));
 
-      // Check if all safe diamonds found
       if (nextDiamonds === 25 - mineCount) {
         handleCashout();
       }
@@ -121,46 +109,37 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4">
-      {/* Top Bar */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-slate-400 hover:text-white text-xs sm:text-sm py-1 px-2.5 rounded-lg hover:bg-slate-800 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Voltar ao Cassino</span>
+    <div className="mx-auto max-w-[30rem] space-y-4 rounded-[2rem] bg-[#070d1c] p-3 text-white shadow-[0_30px_90px_rgba(0,0,0,.55)]">
+      <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#111827] px-3 py-2">
+        <button onClick={onBack} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-2 py-1.5 text-xs text-slate-300 hover:bg-white/10">
+          <ArrowLeft className="h-4 w-4" />
+          Voltar
         </button>
-        <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl text-xs">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span className="text-slate-300 font-semibold">Provably Fair 98.5%</span>
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-1.5 text-[10px] uppercase tracking-[.16em] text-emerald-200">
+          <ShieldCheck className="h-4 w-4" />
+          Provably Fair
         </div>
       </div>
 
-      {/* Main Game Card */}
-      <div className="bg-slate-900 rounded-3xl border border-slate-800 p-5 sm:p-7 shadow-2xl space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+      <div className="overflow-hidden rounded-[1.8rem] border border-yellow-300/30 bg-gradient-to-b from-[#19162d] via-[#121827] to-[#0d1321] p-4 shadow-[0_0_28px_rgba(250,204,21,.12)]">
+        <div className="mb-3 flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <span className="text-amber-400 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-              <Bomb className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.2em] text-amber-300">
+              <Bomb className="h-4 w-4" />
               Original FortuneGo
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white mt-0.5">Mines VIP</h1>
+            </div>
+            <h1 className="mt-1 text-2xl font-black text-white">Mines VIP</h1>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-800 text-right">
-              <span className="text-[10px] text-slate-400 uppercase font-semibold block">
-                Multiplicador Atual
-              </span>
-              <span className="text-lg sm:text-xl font-black text-emerald-400">
-                {currentMultiplier.toFixed(2)}x
-              </span>
+          <div className="flex items-center gap-2">
+            <div className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-right">
+              <div className="text-[9px] uppercase tracking-[.14em] text-emerald-200">Multiplicador</div>
+              <div className="text-lg font-black text-emerald-400">{currentMultiplier.toFixed(2)}x</div>
             </div>
             {gameState === 'playing' && revealedDiamonds > 0 && (
               <button
                 onClick={handleCashout}
-                className="bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-black text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-950/50 animate-pulse hover:scale-105 transition-transform"
+                className="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-4 py-2 text-sm font-black text-slate-950 shadow-[0_12px_28px_rgba(16,185,129,.25)]"
               >
                 Retirar R$ {currentPayout.toFixed(2)}
               </button>
@@ -168,60 +147,50 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
           </div>
         </div>
 
-        {/* 5x5 Minefield Grid */}
-        <div className="max-w-md mx-auto aspect-square bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-800/90 shadow-inner grid grid-cols-5 gap-2 sm:gap-2.5">
-          {tiles.length === 0
-            ? Array.from({ length: 25 }, (_, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-center opacity-70"
-                />
-              ))
-            : tiles.map(tile => {
-                const isRevealed = tile.isRevealed;
-                return (
-                  <button
-                    key={tile.index}
-                    onClick={() => handleTileClick(tile.index)}
-                    disabled={gameState !== 'playing' || isRevealed}
-                    className={`rounded-xl aspect-square flex items-center justify-center transition-all ${
-                      !isRevealed
-                        ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700/80 active:scale-95 cursor-pointer shadow-md'
-                        : tile.isMine
-                        ? 'bg-rose-600/30 border-2 border-rose-500 text-rose-400 animate-in zoom-in'
-                        : 'bg-emerald-600/25 border-2 border-emerald-400 text-emerald-400 animate-in zoom-in'
-                    }`}
-                  >
-                    {isRevealed && (
-                      tile.isMine ? (
-                        <Bomb className="w-6 h-6 sm:w-8 sm:h-8 text-rose-500 fill-rose-500" />
-                      ) : (
-                        <Diamond className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-400 fill-emerald-400" />
-                      )
-                    )}
-                  </button>
-                );
-              })}
+        <div className="mx-auto max-w-md rounded-[1.5rem] border border-white/10 bg-[#070d19] p-3 shadow-inner sm:p-4">
+          <div className="grid grid-cols-5 gap-2 sm:gap-2.5">
+            {tiles.length === 0
+              ? Array.from({ length: 25 }, (_, i) => (
+                  <div key={i} className="flex aspect-square items-center justify-center rounded-xl border border-slate-800 bg-slate-900/80 opacity-80" />
+                ))
+              : tiles.map(tile => {
+                  const isRevealed = tile.isRevealed;
+                  return (
+                    <button
+                      key={tile.index}
+                      onClick={() => handleTileClick(tile.index)}
+                      disabled={gameState !== 'playing' || isRevealed}
+                      className={`aspect-square rounded-xl transition-all ${
+                        !isRevealed
+                          ? 'cursor-pointer border border-slate-700 bg-slate-800 hover:bg-slate-700 active:scale-95 shadow-md'
+                          : tile.isMine
+                            ? 'border-2 border-rose-500 bg-rose-600/25 text-rose-400 animate-in zoom-in'
+                            : 'border-2 border-emerald-400 bg-emerald-600/20 text-emerald-400 animate-in zoom-in'
+                      }`}
+                    >
+                      {isRevealed && (
+                        tile.isMine ? <Bomb className="h-6 w-6 sm:h-8 sm:w-8" /> : <Diamond className="h-6 w-6 sm:h-8 sm:w-8 fill-current" />
+                      )}
+                    </button>
+                  );
+                })}
+          </div>
         </div>
 
-        {/* Game Setup Controls (active when idle or finished) */}
         {gameState !== 'playing' ? (
-          <div className="space-y-4 pt-2">
-            {/* Stakes */}
+          <div className="mt-4 space-y-4">
             <div>
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+              <div className="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-[.18em] text-slate-400">
                 <span>Valor da Aposta</span>
                 <span>Saldo: R$ {user.balance.toFixed(2)}</span>
               </div>
-              <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
+              <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-7">
                 {stakePresets.map(preset => (
                   <button
                     key={preset}
                     onClick={() => setStake(preset)}
-                    className={`py-1.5 rounded-xl text-xs font-bold transition-colors ${
-                      stake === preset
-                        ? 'bg-emerald-500 text-slate-950'
-                        : 'bg-slate-950 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                    className={`rounded-xl py-2 text-xs font-black transition ${
+                      stake === preset ? 'bg-emerald-500 text-slate-950' : 'border border-slate-700 bg-slate-950 text-slate-300 hover:bg-slate-800'
                     }`}
                   >
                     R$ {preset}
@@ -230,21 +199,18 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
               </div>
             </div>
 
-            {/* Mine Count Selection */}
             <div>
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5">
-                <span>Quantidade de Minas no Campo</span>
-                <span className="font-bold text-amber-400">{mineCount} Minas</span>
+              <div className="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-[.18em] text-slate-400">
+                <span>Quantidade de Minas</span>
+                <span className="text-amber-300">{mineCount} minas</span>
               </div>
               <div className="grid grid-cols-6 gap-1.5">
                 {minePresets.map(count => (
                   <button
                     key={count}
                     onClick={() => setMineCount(count)}
-                    className={`py-1.5 rounded-xl text-xs font-bold transition-colors ${
-                      mineCount === count
-                        ? 'bg-amber-500 text-slate-950'
-                        : 'bg-slate-950 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                    className={`rounded-xl py-2 text-xs font-black transition ${
+                      mineCount === count ? 'bg-amber-500 text-slate-950' : 'border border-slate-700 bg-slate-950 text-slate-300 hover:bg-slate-800'
                     }`}
                   >
                     {count}
@@ -255,16 +221,14 @@ export const MinesGameModal: React.FC<MinesGameModalProps> = ({ game, onBack }) 
 
             <button
               onClick={startGame}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 text-slate-950 font-black text-base shadow-xl shadow-emerald-950/50 active:scale-98 transition-all"
+              className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-4 py-3 text-base font-black text-slate-950 shadow-[0_16px_32px_rgba(16,185,129,.25)]"
             >
               Começar Jogo (R$ {stake.toFixed(2)})
             </button>
           </div>
         ) : (
-          <div className="text-center py-2">
-            <p className="text-xs text-slate-400">
-              Clique nas peças para encontrar diamantes. Você pode sacar a qualquer momento!
-            </p>
+          <div className="mt-4 text-center text-xs uppercase tracking-[.14em] text-slate-400">
+            Clique nas peças para encontrar diamantes. Você pode sacar a qualquer momento.
           </div>
         )}
       </div>
