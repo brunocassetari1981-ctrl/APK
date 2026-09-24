@@ -3,268 +3,121 @@ import { CasinoGame } from '../types';
 // Catálogo demonstrativo local. Para operar em produção, conecte estes cards
 // a um provedor licenciado e substitua os RTPs pelos valores oficiais.
 export const CASINO_GAMES: CasinoGame[] = [
-  // Jogos originais FortuneGo
   {
-    id: 'mines',
-    name: 'Mines VIP',
-    studio: 'Original',
-    category: 'mines',
-    gradient: 'from-amber-600 via-yellow-500 to-emerald-500',
-    accent: 'text-amber-300',
-    rtp: '98.5%',
-    iconType: 'Bomb',
-    isHot: true,
-    minBet: 1,
-    maxBet: 500
+    id: 'mines', name: 'Mines VIP', studio: 'Original', category: 'mines',
+    gradient: 'from-amber-600 via-yellow-500 to-emerald-500', accent: 'text-amber-300',
+    rtp: '98.5%', iconType: 'Bomb', isHot: true, minBet: 1, maxBet: 500
   },
   {
-    id: 'mines-gold',
-    name: 'Mines Gold',
-    studio: 'Original',
-    category: 'mines',
-    gradient: 'from-yellow-700 via-amber-500 to-orange-400',
-    accent: 'text-yellow-200',
-    rtp: '97.9%',
-    iconType: 'Bomb',
-    minBet: 1,
-    maxBet: 500
+    id: 'mines-gold', name: 'Mines Gold', studio: 'Original', category: 'mines',
+    gradient: 'from-yellow-700 via-amber-500 to-orange-400', accent: 'text-yellow-200',
+    rtp: '97.9%', iconType: 'Bomb', minBet: 1, maxBet: 500
   },
   {
-    id: 'crash',
-    name: 'Aviator Crash',
-    studio: 'Original',
-    category: 'crash',
-    gradient: 'from-rose-600 via-red-500 to-orange-500',
-    accent: 'text-rose-300',
-    rtp: '97.8%',
-    iconType: 'Plane',
-    isHot: true,
-    minBet: 1,
-    maxBet: 500
+    id: 'crash', name: 'Aviator Crash', studio: 'Original', category: 'crash',
+    gradient: 'from-rose-600 via-red-500 to-orange-500', accent: 'text-rose-300',
+    rtp: '97.8%', iconType: 'Plane', isHot: true, minBet: 1, maxBet: 500
   },
   {
-    id: 'spaceman-crash',
-    name: 'Spaceman Crash',
-    studio: 'Original',
-    category: 'crash',
-    gradient: 'from-indigo-800 via-violet-600 to-fuchsia-500',
-    accent: 'text-violet-200',
-    rtp: '97.2%',
-    iconType: 'Plane',
-    minBet: 1,
-    maxBet: 500
+    id: 'spaceman-crash', name: 'Spaceman Crash', studio: 'Original', category: 'crash',
+    gradient: 'from-indigo-800 via-violet-600 to-fuchsia-500', accent: 'text-violet-200',
+    rtp: '97.2%', iconType: 'Plane', minBet: 1, maxBet: 500
   },
   {
-    id: 'roulette',
-    name: 'Roleta Brasileira',
-    studio: 'Original',
-    category: 'roulette',
-    gradient: 'from-emerald-700 via-green-600 to-yellow-500',
-    accent: 'text-emerald-200',
-    rtp: '97.3%',
-    iconType: 'CircleDot',
-    isHot: true,
-    minBet: 2,
-    maxBet: 1000
+    id: 'roulette', name: 'Roleta Brasileira', studio: 'Original', category: 'roulette',
+    gradient: 'from-emerald-700 via-green-600 to-yellow-500', accent: 'text-emerald-200',
+    rtp: '97.3%', iconType: 'CircleDot', isHot: true, minBet: 2, maxBet: 1000
   },
   {
-    id: 'roulette-live',
-    name: 'Roleta Live',
-    studio: 'Original',
-    category: 'roulette',
-    gradient: 'from-slate-800 via-red-700 to-amber-500',
-    accent: 'text-amber-200',
-    rtp: '97.3%',
-    iconType: 'CircleDot',
-    minBet: 2,
-    maxBet: 1000
+    id: 'roulette-live', name: 'Roleta Live', studio: 'Original', category: 'roulette',
+    gradient: 'from-slate-800 via-red-700 to-amber-500', accent: 'text-amber-200',
+    rtp: '97.3%', iconType: 'CircleDot', minBet: 2, maxBet: 1000
   },
 
-  // Slots populares para a experiência de catálogo do Casino
+  // Slots com aposta mínima de R$ 0,10, como no layout de referência.
   {
-    id: 'fortune_tiger',
-    name: 'Fortune Tiger',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-orange-700 via-amber-500 to-yellow-300',
-    accent: 'text-yellow-100',
-    rtp: '96.81%',
-    iconType: 'Flame',
-    isHot: true,
-    minBet: 1,
-    maxBet: 200
+    id: 'fortune_rabbit', name: 'Fortune Rabbit', studio: 'PG', category: 'slots',
+    gradient: 'from-rose-600 via-orange-500 to-amber-300', accent: 'text-amber-200',
+    rtp: '96.75%', iconType: 'Sparkles', isHot: true, minBet: 0.1, maxBet: 200
   },
   {
-    id: 'fortune_rabbit',
-    name: 'Fortune Rabbit',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-rose-600 via-orange-500 to-amber-300',
-    accent: 'text-amber-200',
-    rtp: '96.75%',
-    iconType: 'Sparkles',
-    isHot: true,
-    minBet: 1,
-    maxBet: 200
+    id: 'fortune_dragon', name: 'Fortune Dragon', studio: 'PG', category: 'slots',
+    gradient: 'from-fuchsia-700 via-red-500 to-orange-400', accent: 'text-yellow-200',
+    rtp: '96.74%', iconType: 'Zap', isHot: true, minBet: 0.1, maxBet: 200
   },
   {
-    id: 'fortune_dragon',
-    name: 'Fortune Dragon',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-fuchsia-700 via-red-500 to-orange-400',
-    accent: 'text-yellow-200',
-    rtp: '96.74%',
-    iconType: 'Zap',
-    isHot: true,
-    minBet: 1,
-    maxBet: 200
+    id: 'fortune_tiger', name: 'Fortune Tiger', studio: 'PG', category: 'slots',
+    gradient: 'from-orange-700 via-amber-500 to-yellow-300', accent: 'text-yellow-100',
+    rtp: '96.81%', iconType: 'Flame', isHot: true, minBet: 0.1, maxBet: 200
   },
   {
-    id: 'gates-of-olympus',
-    name: 'Gates of Olympus',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-blue-800 via-indigo-500 to-cyan-300',
-    accent: 'text-cyan-100',
-    rtp: '96.50%',
-    iconType: 'Sparkles',
-    isHot: true,
-    minBet: 1,
-    maxBet: 200
+    id: 'fortune_rabbit_2', name: 'Fortune Rabbit 2', studio: 'WG', category: 'slots',
+    gradient: 'from-violet-700 via-fuchsia-500 to-pink-400', accent: 'text-pink-100',
+    rtp: '96.80%', iconType: 'Sparkles', minBet: 0.1, maxBet: 200
   },
   {
-    id: 'sweet-bonanza',
-    name: 'Sweet Bonanza',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-pink-600 via-fuchsia-500 to-yellow-300',
-    accent: 'text-pink-100',
-    rtp: '96.48%',
-    iconType: 'Sparkles',
-    isHot: true,
-    minBet: 1,
-    maxBet: 200
+    id: 'fortune_ox', name: 'Fortune Ox', studio: 'PG', category: 'slots',
+    gradient: 'from-red-700 via-orange-500 to-yellow-400', accent: 'text-yellow-100',
+    rtp: '96.75%', iconType: 'Shield', isHot: true, minBet: 0.1, maxBet: 200
   },
   {
-    id: 'book-of-dead',
-    name: 'Book of Dead',
-    studio: 'WG',
-    category: 'slots',
-    gradient: 'from-stone-800 via-amber-700 to-yellow-400',
-    accent: 'text-amber-100',
-    rtp: '96.01%',
-    iconType: 'Crown',
-    minBet: 1,
-    maxBet: 200
+    id: 'pinata_wins', name: 'Pinata Wins', studio: 'PG', category: 'slots',
+    gradient: 'from-cyan-600 via-sky-400 to-yellow-300', accent: 'text-white',
+    rtp: '96.75%', iconType: 'Gift', minBet: 0.1, maxBet: 200
   },
   {
-    id: 'starburst',
-    name: 'Starburst',
-    studio: 'WG',
-    category: 'slots',
-    gradient: 'from-violet-700 via-fuchsia-500 to-pink-300',
-    accent: 'text-pink-100',
-    rtp: '96.09%',
-    iconType: 'Sparkles',
-    minBet: 1,
-    maxBet: 200
+    id: 'fortune_snake', name: 'Fortune Snake', studio: 'WG', category: 'slots',
+    gradient: 'from-emerald-700 via-cyan-500 to-pink-400', accent: 'text-emerald-50',
+    rtp: '96.70%', iconType: 'Crown', minBet: 0.1, maxBet: 200
   },
   {
-    id: 'sugar-rush',
-    name: 'Sugar Rush',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-cyan-600 via-sky-400 to-pink-400',
-    accent: 'text-white',
-    rtp: '96.50%',
-    iconType: 'Gift',
-    isHot: true,
-    minBet: 1,
-    maxBet: 200
+    id: 'mr_treasures_fortune', name: "Mr Treasure's Fortune", studio: 'PG', category: 'slots',
+    gradient: 'from-slate-700 via-indigo-500 to-violet-400', accent: 'text-yellow-100',
+    rtp: '96.72%', iconType: 'Coins', minBet: 0.1, maxBet: 200
   },
   {
-    id: 'pinata_wins',
-    name: 'Pinata Wins',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-cyan-600 via-sky-400 to-yellow-300',
-    accent: 'text-white',
-    rtp: '96.75%',
-    iconType: 'Gift',
-    minBet: 1,
-    maxBet: 200
+    id: 'treasure_bowl', name: 'Treasure Bowl', studio: 'WG', category: 'slots',
+    gradient: 'from-lime-700 via-emerald-500 to-yellow-300', accent: 'text-yellow-50',
+    rtp: '96.65%', iconType: 'Coins', minBet: 0.1, maxBet: 200
   },
   {
-    id: 'fortune_snake',
-    name: 'Fortune Snake',
-    studio: 'WG',
-    category: 'slots',
-    gradient: 'from-emerald-700 via-cyan-500 to-pink-400',
-    accent: 'text-emerald-50',
-    rtp: '96.70%',
-    iconType: 'Crown',
-    minBet: 1,
-    maxBet: 200
+    id: 'fortune_hunter', name: 'Fortune Hunter', studio: 'PG', category: 'slots',
+    gradient: 'from-amber-700 via-rose-500 to-fuchsia-500', accent: 'text-orange-50',
+    rtp: '96.71%', iconType: 'Crosshair', minBet: 0.1, maxBet: 200
   },
   {
-    id: 'mr_treasures_fortune',
-    name: "Mr Treasure's Fortune",
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-slate-700 via-indigo-500 to-violet-400',
-    accent: 'text-yellow-100',
-    rtp: '96.72%',
-    iconType: 'Coins',
-    minBet: 1,
-    maxBet: 200
+    id: 'dragon_fortune', name: 'Dragon Fortune', studio: 'PG', category: 'slots',
+    gradient: 'from-red-900 via-red-600 to-orange-400', accent: 'text-amber-100',
+    rtp: '96.78%', iconType: 'Flame', minBet: 0.1, maxBet: 200
   },
   {
-    id: 'treasure_bowl',
-    name: 'Treasure Bowl',
-    studio: 'WG',
-    category: 'slots',
-    gradient: 'from-lime-700 via-emerald-500 to-yellow-300',
-    accent: 'text-yellow-50',
-    rtp: '96.65%',
-    iconType: 'Coins',
-    minBet: 1,
-    maxBet: 200
+    id: 'lucky_cat', name: 'Lucky Cat', studio: 'PG', category: 'slots',
+    gradient: 'from-yellow-600 via-orange-400 to-rose-400', accent: 'text-white',
+    rtp: '96.73%', iconType: 'Heart', minBet: 0.1, maxBet: 200
   },
   {
-    id: 'fortune_hunter',
-    name: 'Fortune Hunter',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-amber-700 via-rose-500 to-fuchsia-500',
-    accent: 'text-orange-50',
-    rtp: '96.71%',
-    iconType: 'Crosshair',
-    minBet: 1,
-    maxBet: 200
+    id: 'gates-of-olympus', name: 'Gates of Olympus', studio: 'PG', category: 'slots',
+    gradient: 'from-blue-800 via-indigo-500 to-cyan-300', accent: 'text-cyan-100',
+    rtp: '96.50%', iconType: 'Sparkles', isHot: true, minBet: 0.1, maxBet: 200
   },
   {
-    id: 'dragon_fortune',
-    name: 'Dragon Fortune',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-red-900 via-red-600 to-orange-400',
-    accent: 'text-amber-100',
-    rtp: '96.78%',
-    iconType: 'Flame',
-    minBet: 1,
-    maxBet: 200
+    id: 'sweet-bonanza', name: 'Sweet Bonanza', studio: 'PG', category: 'slots',
+    gradient: 'from-pink-600 via-fuchsia-500 to-yellow-300', accent: 'text-pink-100',
+    rtp: '96.48%', iconType: 'Sparkles', isHot: true, minBet: 0.1, maxBet: 200
   },
   {
-    id: 'lucky_cat',
-    name: 'Lucky Cat',
-    studio: 'PG',
-    category: 'slots',
-    gradient: 'from-yellow-600 via-orange-400 to-rose-400',
-    accent: 'text-white',
-    rtp: '96.73%',
-    iconType: 'Heart',
-    minBet: 1,
-    maxBet: 200
+    id: 'book-of-dead', name: 'Book of Dead', studio: 'WG', category: 'slots',
+    gradient: 'from-stone-800 via-amber-700 to-yellow-400', accent: 'text-amber-100',
+    rtp: '96.01%', iconType: 'Crown', minBet: 0.1, maxBet: 200
+  },
+  {
+    id: 'starburst', name: 'Starburst', studio: 'WG', category: 'slots',
+    gradient: 'from-violet-700 via-fuchsia-500 to-pink-300', accent: 'text-pink-100',
+    rtp: '96.09%', iconType: 'Sparkles', minBet: 0.1, maxBet: 200
+  },
+  {
+    id: 'sugar-rush', name: 'Sugar Rush', studio: 'PG', category: 'slots',
+    gradient: 'from-cyan-600 via-sky-400 to-pink-400', accent: 'text-white',
+    rtp: '96.50%', iconType: 'Gift', isHot: true, minBet: 0.1, maxBet: 200
   }
 ];
