@@ -52,7 +52,7 @@ function Poster({ game }: { game: CasinoGame }) {
   const art = artwork[game.id] ?? { emoji: '✨', gradient: game.gradient, glow: 'bg-white' };
 
   return (
-    <div className={`group relative aspect-[0.78] overflow-hidden rounded-[1.45rem] bg-gradient-to-br ${art.gradient} ring-1 ring-white/20 shadow-[0_18px_40px_rgba(18,14,52,0.7)] transition hover:-translate-y-0.5`}>
+    <div className={`group relative aspect-[0.78] overflow-hidden rounded-[1.45rem] bg-gradient-to-br ${art.gradient} ring-1 ring-white/20 shadow-[0_18px_40px_rgba(18,14,52,0.7)] transition duration-200 hover:-translate-y-0.5`}>
       <div className={`absolute -left-8 -top-8 h-28 w-28 rounded-full ${art.glow} opacity-40 blur-2xl`} />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,.42),transparent_20%),linear-gradient(160deg,transparent_30%,rgba(0,0,0,.72))]" />
       <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black/30 to-transparent" />
@@ -115,6 +115,7 @@ export const CasinoView: React.FC = () => {
           </div>
 
           <button
+            type="button"
             onClick={() => setActiveTab('wallet')}
             className="rounded-xl border border-lime-200/70 bg-lime-300 px-3 py-2 text-xs font-black text-slate-950 shadow-lg shadow-lime-500/20"
           >
@@ -144,6 +145,7 @@ export const CasinoView: React.FC = () => {
       <div className="flex gap-2 overflow-x-auto pb-1">
         {categories.map(item => (
           <button
+            type="button"
             key={item.id}
             onClick={() => setCategory(item.id)}
             className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-black transition ${
@@ -173,12 +175,13 @@ export const CasinoView: React.FC = () => {
           <div className="text-lg font-black">Jogos em destaque</div>
           <div className="text-xs text-slate-500">Escolha seu próximo giro</div>
         </div>
-        <button onClick={() => showToast('Ver todos os jogos')} className="rounded-xl border border-white/10 bg-[#161b24] px-2.5 py-1.5 text-[10px] font-black">Ver tudo</button>
+        <button type="button" onClick={() => showToast('Ver todos os jogos')} className="rounded-xl border border-white/10 bg-[#161b24] px-2.5 py-1.5 text-[10px] font-black">Ver tudo</button>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {games.map(game => (
           <button
+            type="button"
             key={game.id}
             onClick={() => setActiveGame(game)}
             className="group rounded-[1.45rem] bg-[#191a21] p-1.5 text-left shadow-[0_12px_28px_rgba(0,0,0,.32)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(0,0,0,.5)]"
@@ -198,6 +201,7 @@ export const CasinoView: React.FC = () => {
       </div>
 
       <button
+        type="button"
         onClick={() => setActiveTab('wallet')}
         className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-[#1b1c23] p-3 text-left hover:bg-[#242631]"
       >
@@ -212,11 +216,11 @@ export const CasinoView: React.FC = () => {
       </button>
 
       <div className="grid grid-cols-5 rounded-2xl bg-[#1b1c23] p-1 text-[10px] font-bold text-slate-400">
-        <button onClick={() => setActiveTab('home')} className="rounded-xl p-2 hover:bg-white/5">Início</button>
-        <button onClick={() => setActiveTab('live')} className="rounded-xl p-2 hover:bg-white/5">Ao Vivo</button>
-        <button onClick={() => setActiveTab('casino')} className="rounded-xl bg-gradient-to-r from-pink-500 to-violet-500 p-2 font-black text-white">Cassino</button>
-        <button onClick={() => setActiveTab('wallet')} className="rounded-xl p-2 hover:bg-white/5">Carteira</button>
-        <button onClick={() => setActiveTab('history')} className="rounded-xl p-2 hover:bg-white/5">Histórico</button>
+        <button type="button" onClick={() => setActiveTab('home')} className="rounded-xl p-2 hover:bg-white/5">Início</button>
+        <button type="button" onClick={() => setActiveTab('live')} className="rounded-xl p-2 hover:bg-white/5">Ao Vivo</button>
+        <button type="button" onClick={() => setActiveTab('casino')} className="rounded-xl bg-gradient-to-r from-pink-500 to-violet-500 p-2 font-black text-white">Cassino</button>
+        <button type="button" onClick={() => setActiveTab('wallet')} className="rounded-xl p-2 hover:bg-white/5">Carteira</button>
+        <button type="button" onClick={() => setActiveTab('history')} className="rounded-xl p-2 hover:bg-white/5">Histórico</button>
       </div>
     </section>
   );
