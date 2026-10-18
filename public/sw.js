@@ -1,11 +1,14 @@
 // FortuneGo Service Worker for Android Installation (PWA / WebAPK)
-const CACHE_NAME = 'fortunego-cache-v1';
+const CACHE_NAME = 'fortunego-cache-v4';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/SmallTile.scale-400.png',
+  '/launchericon-144x144.png',
   '/icon-192.png',
-  '/icon-512.png'
+  '/icon-512.png',
+  '/favicon.ico'
 ];
 
 self.addEventListener('install', event => {

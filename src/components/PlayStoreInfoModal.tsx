@@ -30,6 +30,8 @@ export const PlayStoreInfoModal: React.FC<PlayStoreInfoModalProps> = ({ isOpen, 
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'realtime' | 'apk'>('realtime');
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   if (!isOpen) return null;
 
@@ -37,11 +39,39 @@ export const PlayStoreInfoModal: React.FC<PlayStoreInfoModalProps> = ({ isOpen, 
   const appUrl =
     typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
       ? window.location.href.split('?')[0]
-      : 'https://ais-pre-tr3y7zuvgoc4h76vlsm4ui-406707449082.us-east1.run.app';
+      : 'https://ais-dev-tr3y7zuvgoc4h76vlsm4ui-406707449082.us-east1.run.app';
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
     appUrl
   )}&bgcolor=020617&color=10b981&margin=2`;
+
+  const handleDownloadZip = async () => {
+    setIsDownloading(true);
+    setDownloadSuccess(false);
+    try {
+      const response = await fetch('/FortuneGo-APK-Package.zip');
+      if (!response.ok) throw new Error('Falha ao carregar pacote ZIP');
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = 'FortuneGo-APK-Package.zip';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+      }, 4000);
+      setDownloadSuccess(true);
+      showToast('Download do FortuneGo-APK-Package.zip iniciado!');
+    } catch (err) {
+      console.warn('Direct blob download error, trying direct window open:', err);
+      window.open('/FortuneGo-APK-Package.zip', '_blank');
+      showToast('Abrindo download do arquivo em nova janela...');
+    } finally {
+      setTimeout(() => setIsDownloading(false), 1200);
+    }
+  };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(appUrl);
@@ -78,16 +108,26 @@ npx cap build android`;
       <div className="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-3xl p-5 sm:p-7 shadow-2xl space-y-5 max-h-[92vh] overflow-y-auto">
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-              <Smartphone className="w-5 h-5" />
+          <div className="flex items-center gap-3.5">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/30 to-emerald-500/30 border border-amber-500/40 p-0.5 flex items-center justify-center shrink-0 shadow-xl shadow-emerald-950/40 overflow-hidden ring-2 ring-emerald-500/50">
+              <img
+                src="/SmallTile.scale-400.png"
+                alt="Ícone do APK FortuneGo"
+                className="w-full h-full object-cover rounded-[14px]"
+                referrerPolicy="no-referrer"
+              />
             </div>
             <div>
-              <h3 className="font-black text-white text-lg sm:text-xl">
-                Instalar no Android & Testar APK
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-black text-white text-lg sm:text-xl">
+                  Instalar no Android & Baixar APK
+                </h3>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                  Ícone Chama Ativo
+                </span>
+              </div>
               <p className="text-xs text-slate-400">
-                Visualize as alterações em tempo real no seu celular sem precisar de Play Store
+                FortuneGo — Apostas: Novo ícone e atalho oficial atualizados para Android e Web
               </p>
             </div>
           </div>
@@ -182,7 +222,7 @@ npx cap build android`;
                       3
                     </span>
                     <span>
-                      Pronto! O app abre em tela cheia com ícone verde próprio no Android, sem barra de navegação!
+                      Pronto! O app abre em tela cheia com o novo ícone oficial no Android, sem barra de navegação do navegador!
                     </span>
                   </li>
                 </ol>
@@ -227,27 +267,112 @@ npx cap build android`;
         {/* Tab 2: Export physical .APK */}
         {activeTab === 'apk' && (
           <div className="space-y-4 animate-in fade-in">
+            {/* Direct Package Download with URL Location info */}
+            <div className="bg-slate-950 p-4 rounded-2xl border border-emerald-500/40 space-y-3 shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-white text-sm flex items-center gap-1.5">
+                  <Download className="w-4 h-4 text-emerald-400" />
+                  1. Baixar FortuneGo.apk (Instalador Oficial Android)
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                  7.2 MB • Assinado V1/V2/V3
+                </span>
+              </div>
+
+              {/* URL Location Box */}
+              <div className="p-3 bg-slate-900/90 rounded-xl border border-emerald-500/20 text-xs space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-bold text-emerald-400">🌐 Localização de URL Configurada:</span>
+                  <code className="text-white text-[11px] bg-slate-950 px-2 py-0.5 rounded border border-slate-700 break-all select-all">
+                    https://ais-dev-tr3y7zuvgoc4h76vlsm4ui-406707449082.us-east1.run.app
+                  </code>
+                </div>
+                <div className="text-slate-300 text-[11px] space-y-1">
+                  <p>• <strong>Alterar URL no Celular:</strong> No app instalado, dê um <strong>toque longo de 2 segundos</strong> na tela para abrir a janela e digitar qualquer URL.</p>
+                  <p>• <strong>Modo Offline Embutido:</strong> O APK inclui a plataforma completa (jogos de cassino, apostas, carteira) para funcionar 100% mesmo sem internet.</p>
+                  <p>• <strong>Onde fica no Código:</strong> No arquivo <code>MainActivity.java</code> na linha 37 (<code>public static final String DEFAULT_URL</code>).</p>
+                </div>
+              </div>
+              
+              <div className="pt-1 flex flex-wrap gap-2.5">
+                <a
+                  href="/FortuneGo.apk"
+                  download="FortuneGo.apk"
+                  className="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-black text-xs rounded-xl inline-flex items-center gap-2 shadow-lg shadow-emerald-950/50 transition-all cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Baixar FortuneGo.apk (Instalador)</span>
+                </a>
+
+                <a
+                  href="/FortuneGo-Android-Source.zip"
+                  download="FortuneGo-Android-Source.zip"
+                  className="px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white font-bold text-xs rounded-xl inline-flex items-center gap-1.5 border border-slate-700/80 transition-all"
+                >
+                  <Terminal className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Código-Fonte Android (.ZIP)</span>
+                </a>
+
+                <button
+                  onClick={handleDownloadZip}
+                  disabled={isDownloading}
+                  className="px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white font-bold text-xs rounded-xl inline-flex items-center gap-1.5 border border-slate-700/80 transition-all cursor-pointer disabled:opacity-50"
+                >
+                  {isDownloading ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : downloadSuccess ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Download className="w-3.5 h-3.5" />
+                  )}
+                  <span>Pacote Completo (.ZIP)</span>
+                </button>
+              </div>
+
+              {/* Quick Individual Files */}
+              <div className="pt-2 border-t border-slate-800/80 flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
+                <span>Arquivos avulsos:</span>
+                <a
+                  href="/SmallTile.scale-400.png"
+                  download="SmallTile.scale-400.png"
+                  target="_blank"
+                  className="text-emerald-400 hover:underline inline-flex items-center gap-1"
+                >
+                  Ícone Chama (PNG)
+                </a>
+                <span>•</span>
+                <a
+                  href="/manifest.json"
+                  download="manifest.json"
+                  target="_blank"
+                  className="text-emerald-400 hover:underline inline-flex items-center gap-1"
+                >
+                  manifest.json
+                </a>
+              </div>
+            </div>
+
             <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-white text-sm">
-                  1. Gerador Automático de APK (PWABuilder - Oficial)
+                  2. Gerador Automático de APK (PWABuilder - Oficial)
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
-                  Sem Compilar
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-400">
+                  Gera .APK Online
                 </span>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
-                O <strong>PWABuilder</strong> pega o link do app e gera o pacote com o arquivo <code>.apk</code> assinado para você baixar e instalar diretamente em qualquer Android:
+                O <strong>PWABuilder</strong> conecta ao app com o novo ícone e compila o arquivo <code>.apk</code> assinado pronto para instalar no Android:
               </p>
               <div className="pt-2 flex flex-wrap gap-2">
                 <a
                   href={`https://www.pwabuilder.com?site=${encodeURIComponent(appUrl)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl inline-flex items-center gap-2 shadow"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl inline-flex items-center gap-2 border border-slate-700 shadow"
                 >
-                  <span>Abrir PWABuilder com o FortuneGo</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Gerar .APK com PWABuilder</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
                 </a>
               </div>
             </div>
@@ -255,8 +380,8 @@ npx cap build android`;
             <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-white text-sm flex items-center gap-1.5">
-                  <Terminal className="w-4 h-4 text-sky-400" />
-                  2. Capacitor (Compilação Offline do APK)
+                  <Terminal className="w-4 h-4 text-amber-400" />
+                  3. Capacitor (Compilação Offline do APK no Android Studio)
                 </span>
                 <button
                   onClick={() => handleCopyCommands(capacitorCommands, 2)}
@@ -267,7 +392,7 @@ npx cap build android`;
                 </button>
               </div>
               <p className="text-xs text-slate-400">
-                Se você baixou o projeto (via Exportar ZIP no menu Settings) e quer compilar o APK no seu computador com Android Studio:
+                Para compilar manualmente no Android Studio usando o pacote descompactado:
               </p>
               <pre className="bg-slate-900 p-3 rounded-xl text-[11px] font-mono text-slate-300 overflow-x-auto border border-slate-800">
                 {capacitorCommands}

@@ -83,6 +83,8 @@ export interface CasinoGame {
   isHot?: boolean;
   minBet: number;
   maxBet: number;
+  posterUrl?: string;
+  badge?: string;
 }
 
 export type AppTab = 'home' | 'live' | 'casino' | 'wallet' | 'history';

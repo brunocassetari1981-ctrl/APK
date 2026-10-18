@@ -7,19 +7,20 @@ import {
   Menu,
   X,
   PlusCircle,
-  Smartphone,
   Trophy,
   History,
   Gamepad2,
   Radio,
   Home,
-  RefreshCw
+  RefreshCw,
+  Download
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { AppTab } from '../types';
+import { triggerDirectApkDownload } from '../utils/apkDownloader';
 
 interface HeaderProps {
-  onOpenPlayStoreModal: () => void;
+  onOpenPlayStoreModal?: () => void;
   onOpenLiveApiModal: () => void;
 }
 
@@ -66,15 +67,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPlayStoreModal, onOpenLive
               onClick={() => setActiveTab('home')}
               className="flex items-center gap-2.5 text-left group"
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-amber-400 flex items-center justify-center shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform">
-                <Flame className="w-5 h-5 text-slate-950 fill-slate-950" />
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-amber-400 p-0.5 shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform overflow-hidden">
+                <img
+                  src="/SmallTile.scale-400.png"
+                  alt="FortuneGo Icon"
+                  className="w-full h-full object-cover rounded-[10px]"
+                  referrerPolicy="no-referrer"
+                />
               </div>
               <div>
                 <span className="text-xl font-black tracking-tight text-white flex items-center">
                   Fortune<span className="text-emerald-400">Go</span>
                 </span>
                 <span className="text-[10px] text-emerald-400/90 font-semibold tracking-wider uppercase block -mt-1">
-                  Apostas & Slots
+                  Apostas
                 </span>
               </div>
             </button>
@@ -109,6 +115,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPlayStoreModal, onOpenLive
 
           {/* Right: Balance, Sound, Play Store export */}
           <div className="flex items-center gap-2.5">
+            {/* Direct APK Download Button */}
+            <button
+              id="header-direct-download-apk"
+              onClick={() => triggerDirectApkDownload()}
+              title="Baixar instalador FortuneGo.apk (651 KB)"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 text-xs rounded-lg font-black transition-transform active:scale-95 shadow-md shadow-emerald-500/20 cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Baixar APK</span>
+              <span className="sm:hidden">APK</span>
+            </button>
+
             {/* Live Sports API Feed Pill */}
             <button
               id="header-live-api-btn"
@@ -120,18 +138,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPlayStoreModal, onOpenLive
               <span className="hidden sm:inline">Jogos Ao Vivo (API)</span>
               <span className="sm:hidden">Ao Vivo</span>
               {isLiveSyncing && <RefreshCw className="w-3 h-3 animate-spin text-emerald-400" />}
-            </button>
-
-            {/* Android APK Installation Badge */}
-            <button
-              id="header-play-store-btn"
-              onClick={onOpenPlayStoreModal}
-              title="Instalar no celular Android ou gerar APK para teste"
-              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-xs text-emerald-300 rounded-lg transition-colors font-bold shadow-sm"
-            >
-              <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline">Instalar Android (APK)</span>
-              <span className="sm:hidden">APK</span>
             </button>
 
             {/* Audio Toggle */}
@@ -204,26 +210,28 @@ export const Header: React.FC<HeaderProps> = ({ onOpenPlayStoreModal, onOpenLive
             </button>
           ))}
 
-          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+          <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
             <button
               onClick={() => {
-                onOpenPlayStoreModal();
+                triggerDirectApkDownload();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2 text-xs text-emerald-400 font-semibold p-2"
+              className="flex items-center justify-center gap-2 w-full py-2.5 bg-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-md cursor-pointer"
             >
-              <Smartphone className="w-4 h-4" />
-              Guia Google Play Store APK
+              <Download className="w-4 h-4" />
+              <span>Baixar FortuneGo.apk (651 KB)</span>
             </button>
-            <button
-              onClick={() => {
-                resetDemoBalance();
-                setMobileMenuOpen(false);
-              }}
-              className="text-xs text-slate-400 hover:text-white p-2 underline"
-            >
-              Restaurar Saldo Demo
-            </button>
+            <div className="flex items-center justify-end">
+              <button
+                onClick={() => {
+                  resetDemoBalance();
+                  setMobileMenuOpen(false);
+                }}
+                className="text-xs text-slate-400 hover:text-white p-2 underline"
+              >
+                Restaurar Saldo Demo
+              </button>
+            </div>
           </div>
         </div>
       )}

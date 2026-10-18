@@ -1,0 +1,107 @@
+{
+  "name": "FortuneGo",
+  "short_name": "FortuneGo",
+  "description": "FortuneGo — Apostas",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "dir": "ltr",
+  "lang": "pt-BR",
+  "categories": ["sports", "games", "entertainment"],
+  "icons": [
+    {
+      "src": "/SmallTile.scale-400.png",
+      "sizes": "400x400",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/launchericon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Apostar Agora",
+      "short_name": "Apostas",
+      "description": "Acessar apostas esportivas e jogos",
+      "url": "/?source=shortcut",
+      "icons": [
+        {
+          "src": "/SmallTile.scale-400.png",
+          "sizes": "400x400",
+          "type": "image/png"
+        },
+        {
+          "src": "/launchericon-144x144.png",
+          "sizes": "144x144",
+          "type": "image/png"
+        },
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Cassino & Slots",
+      "short_name": "Cassino",
+      "description": "Entrar direto no Cassino e Slots",
+      "url": "/?tab=casino",
+      "icons": [
+        {
+          "src": "/SmallTile.scale-400.png",
+          "sizes": "400x400",
+          "type": "image/png"
+        },
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "FortuneGo App Mobile"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "FortuneGo App Desktop"
+    }
+  ]
+}

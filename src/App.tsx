@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Header } from './components/Header';
 import { MobileNav } from './components/MobileNav';
@@ -10,13 +10,30 @@ import { WalletView } from './components/WalletView';
 import { BetHistoryView } from './components/BetHistoryView';
 import { PlayStoreInfoModal } from './components/PlayStoreInfoModal';
 import { LiveApiModal } from './components/LiveApiModal';
-import { CheckCircle2, Sparkles, Smartphone, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Download, Smartphone, Check } from 'lucide-react';
+import { triggerDirectApkDownload } from './utils/apkDownloader';
 
 const MainLayout: React.FC = () => {
   const { activeTab, setActiveTab, toast, betslip, syncRealLiveGames, isLiveSyncing, lastSyncTime } = useApp();
   const [mobileBetslipOpen, setMobileBetslipOpen] = useState(false);
   const [playStoreModalOpen, setPlayStoreModalOpen] = useState(false);
   const [liveApiModalOpen, setLiveApiModalOpen] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  useEffect(() => {
+    // If user accesses the page with ?download or #download, start APK download right away
+    if (window.location.search.includes('download') || window.location.hash.includes('download')) {
+      triggerDirectApkDownload();
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 8000);
+    }
+  }, []);
+
+  const handleDownload = () => {
+    triggerDirectApkDownload();
+    setDownloadSuccess(true);
+    setTimeout(() => setDownloadSuccess(false), 8000);
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-emerald-500 selection:text-slate-950">
@@ -28,32 +45,55 @@ const MainLayout: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 pb-24 lg:pb-8">
-        {/* Android Live Testing Banner */}
-        <div className="mb-5 bg-gradient-to-r from-emerald-950/70 via-slate-900 to-slate-900 border border-emerald-500/30 rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
-              <Smartphone className="w-4 h-4" />
+        {/* Direct APK Download Banner */}
+        <div className="mb-6 bg-gradient-to-r from-emerald-950/90 via-slate-900 to-slate-900 border-2 border-emerald-500/60 rounded-2xl p-4 sm:p-5 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5 w-full md:w-auto">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-inner">
+              <Smartphone className="w-6 h-6 animate-pulse" />
             </div>
             <div>
-              <p className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
-                <span>Instalar no celular Android & Testar APK</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
-                  Atualizações em Tempo Real
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-white">FortuneGo.apk Oficial com Localização de URL</h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40">
+                  7.2 MB • Online + Offline Embutido
                 </span>
-              </p>
-              <p className="text-[11px] text-slate-400">
-                Instale no seu Android para ver as alterações instantaneamente sem precisar reinstalar APK.
+              </div>
+              <p className="text-xs text-slate-300 mt-1">
+                Conecta na URL ativa do servidor e funciona 100% offline se não houver internet. Dê um toque longo de 2s na tela para configurar qualquer URL!
               </p>
             </div>
           </div>
-          <button
-            onClick={() => setPlayStoreModalOpen(true)}
-            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-md"
-          >
-            <span>Instalar no Android</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full md:w-auto shrink-0">
+            <button
+              id="download-apk-banner-btn"
+              onClick={handleDownload}
+              className="flex-1 sm:flex-initial px-5 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-black text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 transition-transform active:scale-95 cursor-pointer"
+            >
+              <Download className="w-4 h-4" />
+              <span>BAIXAR APK NO CELULAR</span>
+            </button>
+            <a
+              href="/FortuneGo-Android-Source.zip"
+              download="FortuneGo-Android-Source.zip"
+              className="px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 border border-slate-700 transition-colors"
+              title="Baixar código-fonte completo do Android para ver/alterar a URL"
+            >
+              <span>Ver Código Java</span>
+            </a>
+          </div>
         </div>
+
+        {/* Download Success Notice */}
+        {downloadSuccess && (
+          <div className="mb-6 bg-emerald-950/90 border border-emerald-500/80 rounded-2xl p-4 flex items-start gap-3 text-emerald-200 shadow-xl">
+            <Check className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+            <div className="text-xs sm:text-sm">
+              <strong className="block text-white font-bold">Download iniciado com sucesso!</strong>
+              Puxe a barra de notificações do seu celular ou abra seus arquivos em <em>Downloads</em> e toque em <strong>FortuneGo.apk</strong> para instalar.
+            </div>
+          </div>
+        )}
+
         <div
           className={
             activeTab === 'casino' || activeTab === 'wallet' || activeTab === 'history'
